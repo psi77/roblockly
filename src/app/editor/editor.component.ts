@@ -13,17 +13,22 @@ export class EditorComponent implements OnInit {
   constructor() { }
 
   ngOnInit() {
-    this.workspace = Blockly.inject('blocklyDiv', {
-      toolbox: document.getElementById('toolbox'),
-      readOnly: false,
-      trashcan: true,
-      move: {
-        scrollbars: true,
-        drag: true,
-        wheel: true
-      },
-    });
+    this.workspace = Blockly.inject(
+      document.getElementById('blocklyDiv'),
+      {
+        readOnly: false,
+        // media: 'media/',
+        trashcan: true,
+        move: {
+          scrollbars: true,
+          drag: true,
+          wheel: true
+        },
+        toolbox: document.getElementById('toolbox')
+      } as Blockly.BlocklyOptions
+    );
   }
+
 
   saveProgram(): void {
     // this.program.xmlData = Blockly.Xml.domToText(
