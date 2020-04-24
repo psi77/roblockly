@@ -8,46 +8,30 @@ import * as Blockly from 'blockly';
 })
 export class EditorComponent implements OnInit {
 
+  workspace: any;
+
   constructor() { }
 
   ngOnInit() {
-    const blocklyDiv = document.getElementById('blocklyDiv');
-
-    Blockly.inject(blocklyDiv, {
+    this.workspace = Blockly.inject('blocklyDiv', {
+      toolbox: document.getElementById('toolbox'),
       readOnly: false,
-      media: 'media/',
       trashcan: true,
       move: {
         scrollbars: true,
         drag: true,
         wheel: true
       },
-      toolbox: `
-      <xml xmlns="https://developers.google.com/blockly/xml" id="toolbox-simple" style="display: none">
-        <block type="controls_ifelse"></block>
-        <block type="logic_compare"></block>
-        <block type="logic_operation"></block>
-        <block type="controls_repeat_ext">
-            <value name="TIMES">
-                <shadow type="math_number">
-                    <field name="NUM">10</field>
-                </shadow>
-            </value>
-        </block>
-        <block type="logic_operation"></block>
-        <block type="logic_negate"></block>
-        <block type="logic_boolean"></block>
-        <block type="logic_null" disabled="true"></block>
-        <block type="logic_ternary"></block>
-        <block type="text_charAt">
-            <value name="VALUE">
-                <block type="variables_get">
-                    <field name="VAR">text</field>
-                </block>
-            </value>
-        </block>
-      </xml>
-        `
-    } as Blockly.BlocklyOptions);
+    });
+  }
+
+  saveProgram(): void {
+    // this.program.xmlData = Blockly.Xml.domToText(
+    //   Blockly.Xml.workspaceToDom(this.workspace)
+    // );
+    // console.log('saving the program - ', JSON.stringify(this.program));
+    // this.programService.upsertOne(this.program);
+    // this.router.navigate(['listProgram']);
+    console.log('Saving now');
   }
 }
