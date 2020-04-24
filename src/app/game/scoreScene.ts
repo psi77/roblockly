@@ -1,4 +1,4 @@
-import "phaser";
+import Phaser from 'phaser';
 export class ScoreScene extends Phaser.Scene {
 
   score: number;
@@ -7,7 +7,7 @@ export class ScoreScene extends Phaser.Scene {
 
   constructor() {
     super({
-      key: "ScoreScene"
+      key: 'ScoreScene'
     });
   }
 
@@ -16,26 +16,26 @@ export class ScoreScene extends Phaser.Scene {
   }
 
   create(): void {
-    var resultText: string = 'Your score is ' + this.score + '!';
+    const resultText: string = 'Your score is ' + this.score + '!';
     this.result = this.add.text(
-      200, 
-      250, 
+      200,
+      250,
       resultText,
-      { 
-        font: '48px Arial Bold', fill: '#FBFBAC' 
+      {
+        font: '48px Arial Bold', fill: '#FBFBAC'
       }
     );
-    var hintText: string = "Click to restart";
+    const hintText = 'Click to restart';
     this.hint = this.add.text(
-      300, 
-      350, 
+      300,
+      350,
       hintText,
-      { 
-        font: '24px Arial Bold', fill: '#FBFBAC' 
+      {
+        font: '24px Arial Bold', fill: '#FBFBAC'
       }
     );
-    this.input.on('pointerdown', function (/*pointer*/) {
-      this.scene.start("WelcomeScene");
+    this.input.on('pointerdown', function(/*pointer*/) {
+      this.scene.start('WelcomeScene');
     }, this);
   }
-};
+}

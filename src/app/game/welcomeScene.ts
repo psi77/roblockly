@@ -1,17 +1,17 @@
-import "phaser";
+import Phaser from 'phaser';
 export class WelcomeScene extends Phaser.Scene {
-  
+
   title: Phaser.GameObjects.Text;
   hint: Phaser.GameObjects.Text;
 
   constructor() {
     super({
-      key: "WelcomeScene"
+      key: 'WelcomeScene'
     });
   }
 
   create(): void {
-    var titleText: string = "Starfall";
+    const titleText = 'Starfall';
     this.title = this.add.text(
       150,
       200,
@@ -20,17 +20,17 @@ export class WelcomeScene extends Phaser.Scene {
         font: '128px Arial Bold', fill: '#FBFBAC'
       }
     );
-    var hintText: string = "Click to start";
+    const hintText = 'Click to start';
     this.hint = this.add.text(
       300,
       350,
       hintText,
-      { 
+      {
         font: '24px Arial Bold', fill: '#FBFBAC'
       }
     );
-    this.input.on('pointerdown', function (/*pointer*/) {
-      this.scene.start("GameScene");
+    this.input.on('pointerdown', function(/*pointer*/) {
+      this.scene.start('GameScene');
     }, this);
   }
-};
+}
