@@ -1,5 +1,18 @@
+mat-toolbar {
+  position: sticky;
+  position: -webkit-sticky; /* For macOS/iOS Safari */
+  top: 0; /* Sets the sticky toolbar to be on top */
+  z-index: 2;
+}
+
 #blocklyDiv {
     height: 90%;
     width: 99%;
     margin: auto;
+    margin-top: 5px;
+}
+
+.container {
+  height: 100%;
+  color: black;
 }
