@@ -24,6 +24,7 @@
     "@angular/router": "~9.1.3",
     "blockly": "^3.20200402.1",
     "hammerjs": "^2.0.8",
+    "js-interpreter": "^2.2.0",
     "phaser": "^3.22.0",
     "rxjs": "~6.5.5",
     "tslib": "^1.10.0",

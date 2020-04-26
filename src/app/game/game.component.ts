@@ -1,8 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import Phaser from 'phaser';
-import { WelcomeScene } from './welcomeScene';
-import { GameScene } from './gameScene';
-import { ScoreScene } from './scoreScene';
+import { ArenaScene } from './arena.scene';
 
 class MainScene extends Phaser.Scene {
   constructor() {
@@ -26,22 +24,25 @@ export class GameComponent implements OnInit {
   phaserGame: Phaser.Game;
   config: Phaser.Types.Core.GameConfig; constructor() {
     this.config = {
-      title: 'Starfall',
-      width: 800,
-      height: 600,
+      type: Phaser.AUTO,
+      title: 'BattleArena',
       parent: 'game',
-      scene: [WelcomeScene, GameScene, ScoreScene],
+      width: 400,
+      height: 600,
       physics: {
         default: 'arcade',
         arcade: {
-          debug: false
+          fps: 60,
+          gravity: { y: 0 },
+          debug: true
         }
       },
-      backgroundColor: '#000033'
+      scene: [ArenaScene]
     };
   }
 
   ngOnInit() {
     this.phaserGame = new Phaser.Game(this.config);
+    this.phaserGame.scene.start('ArenaScene', { test: 'hello' });
   }
 }
