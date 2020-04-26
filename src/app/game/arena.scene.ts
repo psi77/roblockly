@@ -1,12 +1,12 @@
 import Phaser from 'phaser';
-import { RobotAdapter } from '../models/robot.adapter';
-export class ArenaScene extends Phaser.Scene {
+import { RobotAdapter, RobotImpl } from '../models/robot.adapter';
+
+export class ArenaScene extends Phaser.Scene implements RobotImpl {
 
   sprite: Phaser.Physics.Arcade.Image;
   walls: Phaser.GameObjects.GameObject[] = [];
   gfx: Phaser.GameObjects.Graphics;
 
-  program: string;
   robotAdapter: RobotAdapter;
 
   constructor() {
@@ -17,7 +17,8 @@ export class ArenaScene extends Phaser.Scene {
 
   init(data: any): void {
     console.log(data);
-    this.program = data.program;
+    this.robotAdapter = data.robotAdapter;
+    this.robotAdapter.setRobotImpl(this);
   }
 
   preload(): void {
@@ -58,10 +59,6 @@ export class ArenaScene extends Phaser.Scene {
     this.physics.add.collider(this.walls, null);
 
     this.gfx = this.add.graphics();
-
-    // TODO: compile robot
-    this.robotAdapter = new RobotAdapter(this.sprite, this.physics);
-    this.robotAdapter.compile(this.program);
   }
 
   update(time: number): void {
@@ -86,6 +83,7 @@ export class ArenaScene extends Phaser.Scene {
     //   );
     // }
 
+    // TODO: setter for all stuff
     this.robotAdapter.sensorDistance = this.raycast(this.sprite, 3000);
     this.robotAdapter.step();
 
@@ -159,5 +157,23 @@ export class ArenaScene extends Phaser.Scene {
         return range + 1;
       }
     }
+  }
+
+  forward(percentage: number) {
+    this.physics.velocityFromRotation(
+      this.sprite.rotation,
+      this.robotAdapter.speedFromPercentage(percentage), // TODO: not will be robot specific
+      (this.sprite.body as Phaser.Physics.Arcade.Body).acceleration
+    );
+    this.sprite.setAngularVelocity(0);
+  }
+
+  rotate(angularVelocity: number) {
+    // TODO: normalise angularVelocity
+    this.sprite.setAngularVelocity(angularVelocity);
+  }
+
+  accelerate(xa: number, ya: number) {
+    this.sprite.setAcceleration(xa, ya);
   }
 }

@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import Phaser from 'phaser';
 import { ArenaScene } from './arena.scene';
+import { RobotAdapter } from '../models/robot.adapter';
 
 class MainScene extends Phaser.Scene {
   constructor() {
@@ -58,7 +59,10 @@ export class GameComponent implements OnInit {
     prog += '  }';
     prog += '}';
 
+    const ra = new RobotAdapter();
+    ra.compile(prog);
+
     this.phaserGame = new Phaser.Game(this.config);
-    this.phaserGame.scene.start('ArenaScene', { program: prog });
+    this.phaserGame.scene.start('ArenaScene', { robotAdapter: ra });
   }
 }

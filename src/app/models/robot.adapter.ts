@@ -1,23 +1,27 @@
 import Phaser from 'phaser';
 import Interpreter from 'js-interpreter';
 
+export interface RobotImpl {
+  forward(percentage: number): void;
+
+  rotate(angularVelocity: number): void;
+
+  accelerate(xa: number, ya: number): void;
+}
+
 export class RobotAdapter {
 
   // TODO: add in robot stats, armour, ammo?, cpu speed etc
   maxSpeed: integer = 100;
   sensorDistance: number;
-  sprite: Phaser.Physics.Arcade.Image;
-  physics: Phaser.Physics.Arcade.ArcadePhysics;
 
+  robotImpl: RobotImpl;
   interpreter: any;
 
-  // TODO: pass functions for movement etc so can handle phaser.arcade specific?
-  constructor(
-    sprite: Phaser.Physics.Arcade.Image,
-    physics: Phaser.Physics.Arcade.ArcadePhysics
-  ) {
-    this.sprite = sprite;
-    this.physics = physics;
+  constructor() {}
+
+  setRobotImpl(robotImpl: RobotImpl) {
+    this.robotImpl = robotImpl;
   }
 
   speedFromPercentage(percentage: number): integer {
@@ -26,25 +30,15 @@ export class RobotAdapter {
   }
 
   forward(percentage: number) {
-    this.physics.velocityFromRotation(
-      this.sprite.rotation,
-      this.speedFromPercentage(percentage),
-      (this.sprite.body as Phaser.Physics.Arcade.Body).acceleration
-    );
-    this.sprite.setAngularVelocity(0);
+    this.robotImpl.forward(percentage);
   }
 
   rotate(angularVelocity: number) {
-    // TODO: normalise angularVelocity
-    this.sprite.setAngularVelocity(angularVelocity);
+    this.robotImpl.rotate(angularVelocity);
   }
 
   accelerate(xa: number, ya: number) {
-    this.sprite.setAcceleration(xa, ya);
-  }
-
-  stop() {
-    this.sprite.setAcceleration(0);
+    this.robotImpl.accelerate(xa, ya);
   }
 
   compile(program: string) {
