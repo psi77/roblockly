@@ -50,7 +50,7 @@ export class GameComponent implements OnInit {
     prog += '    robot.rotate(-300);';
     prog += '    robot.accelerate(2, 2);';
     prog += '  } else if (n < 100) {';
-    prog += '    robot.rotate(' + turn + ');';
+    prog += '    robot.rotate(' + turn + ' * n);';
     prog += '    robot.accelerate(0, 0);';
     prog += '  } else {';
     prog += '    robot.rotate(0);';
@@ -71,8 +71,8 @@ export class GameComponent implements OnInit {
       'ArenaScene',
       {
         robotAdapters: [
-          this.createRobot(-50),
-          this.createRobot(50)
+          this.createRobot(-1),
+          this.createRobot(1)
         ]
       }
     );
