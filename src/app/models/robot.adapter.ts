@@ -94,7 +94,7 @@ export class RobotAdapter {
   step() {
     // TODO: cpu, better takes more steps
 
-    for (let n = 0; n < 10; n++) {
+    for (let n = 0; n < 5; n++) {
       this.interpreter.step();
     }
   }

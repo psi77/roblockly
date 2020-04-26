@@ -42,8 +42,7 @@ export class GameComponent implements OnInit {
     };
   }
 
-  ngOnInit() {
-
+  createRobot(turn: integer): RobotAdapter {
     let prog = '';
     prog += 'while(true) {';
     prog += '  var n = robot.sensor();';
@@ -51,7 +50,7 @@ export class GameComponent implements OnInit {
     prog += '    robot.rotate(-300);';
     prog += '    robot.accelerate(2, 2);';
     prog += '  } else if (n < 100) {';
-    prog += '    robot.rotate(-50);';
+    prog += '    robot.rotate(' + turn + ');';
     prog += '    robot.accelerate(0, 0);';
     prog += '  } else {';
     prog += '    robot.rotate(0);';
@@ -62,7 +61,20 @@ export class GameComponent implements OnInit {
     const ra = new RobotAdapter();
     ra.compile(prog);
 
+    return ra;
+  }
+
+  ngOnInit() {
+
     this.phaserGame = new Phaser.Game(this.config);
-    this.phaserGame.scene.start('ArenaScene', { robotAdapter: ra });
+    this.phaserGame.scene.start(
+      'ArenaScene',
+      {
+        robotAdapters: [
+          this.createRobot(-50),
+          this.createRobot(50)
+        ]
+      }
+    );
   }
 }

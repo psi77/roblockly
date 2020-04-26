@@ -1,13 +1,49 @@
 import Phaser from 'phaser';
 import { RobotAdapter, RobotImpl } from '../models/robot.adapter';
 
-export class ArenaScene extends Phaser.Scene implements RobotImpl {
+class RobotHandler implements RobotImpl {
 
   sprite: Phaser.Physics.Arcade.Image;
+  robotAdapter: RobotAdapter;
+  physics: Phaser.Physics.Arcade.ArcadePhysics;
+
+  constructor(
+    robotAdapter: RobotAdapter,
+    sprite: Phaser.Physics.Arcade.Image,
+    physics: Phaser.Physics.Arcade.ArcadePhysics
+  ) {
+    this.sprite = sprite;
+    this.robotAdapter = robotAdapter;
+    this.physics = physics;
+  }
+
+  forward(percentage: number) {
+    this.physics.velocityFromRotation(
+      this.sprite.rotation,
+      this.robotAdapter.speedFromPercentage(percentage),
+      (this.sprite.body as Phaser.Physics.Arcade.Body).acceleration
+    );
+    this.sprite.setAngularVelocity(0);
+  }
+
+  rotate(angularVelocity: number) {
+    // TODO: normalise angularVelocity
+    this.sprite.setAngularVelocity(angularVelocity);
+  }
+
+  accelerate(xa: number, ya: number) {
+    this.sprite.setAcceleration(xa, ya);
+  }
+}
+
+export class ArenaScene extends Phaser.Scene {
+
   walls: Phaser.GameObjects.GameObject[] = [];
   gfx: Phaser.GameObjects.Graphics;
+  sprites: Phaser.Physics.Arcade.Image[] = [];
 
-  robotAdapter: RobotAdapter;
+  robotAdapters: RobotAdapter[] = [];
+  robotHandlers: RobotHandler[] = [];
 
   constructor() {
     super({
@@ -16,9 +52,8 @@ export class ArenaScene extends Phaser.Scene implements RobotImpl {
   }
 
   init(data: any): void {
-    console.log(data);
-    this.robotAdapter = data.robotAdapter;
-    this.robotAdapter.setRobotImpl(this);
+    // console.log(data);
+    this.robotAdapters = data.robotAdapters;
   }
 
   preload(): void {
@@ -26,13 +61,6 @@ export class ArenaScene extends Phaser.Scene implements RobotImpl {
   }
 
   create(): void {
-
-    this.sprite = this.physics.add.image(200, 300, 'ship');
-
-    this.sprite.setBounce(0.2);
-    this.sprite.setDamping(true);
-    this.sprite.setDrag(0.50);
-    this.sprite.setMaxVelocity(120);
 
     this.createWall(5, 5, 10, 600, true);
     this.createWall(15, 5, 400, 10, true);
@@ -59,35 +87,41 @@ export class ArenaScene extends Phaser.Scene implements RobotImpl {
     this.physics.add.collider(this.walls, null);
 
     this.gfx = this.add.graphics();
+
+    this.createRobots();
+  }
+
+  createRobots() {
+
+    let x = 50;
+    let y = 50;
+    for (const adapter of this.robotAdapters) {
+      const sprite = this.physics.add.image(x, y, 'ship');
+      sprite.setBounce(0.2);
+      sprite.setDamping(true);
+      sprite.setDrag(0.50);
+      sprite.setMaxVelocity(120);
+      x += sprite.width + 10;
+      y += sprite.height + 10;
+
+      const handler = new RobotHandler(adapter, sprite, this.physics);
+      adapter.setRobotImpl(handler);
+      this.robotHandlers.push(handler);
+      this.sprites.push(sprite);
+    }
   }
 
   update(time: number): void {
 
-    // const nearest = this.raycast(
-    //   this.sprite,
-    //   3000
-    // );
-
-    // if (nearest === 0) {
-    //   this.sprite.setAngularVelocity(-300);
-    //   this.sprite.setAcceleration(2);
-    // } else if (nearest < 60) {
-    //   this.sprite.setAngularVelocity(-100);
-    //   this.sprite.setAcceleration(0);
-    // } else {
-    //   this.sprite.setAngularVelocity(0);
-    //   this.physics.velocityFromRotation(
-    //     this.sprite.rotation,
-    //     120,
-    //     (this.sprite.body as Phaser.Physics.Arcade.Body).acceleration
-    //   );
-    // }
+    this.gfx.clear();
 
     // TODO: setter for all stuff
-    this.robotAdapter.sensorDistance = this.raycast(this.sprite, 3000);
-    this.robotAdapter.step();
-
-    this.physics.world.collide(this.sprite, this.walls);
+    for (const handler of this.robotHandlers) {
+      handler.robotAdapter.sensorDistance = this.raycast(handler.sprite, 3000);
+      handler.robotAdapter.step();
+      this.physics.world.collide(handler.sprite, this.walls);
+      this.physics.world.collide(handler.sprite, this.sprites);
+    }
   }
 
   createWall(x: integer, y: integer, width: integer, height: integer, stat: boolean) {
@@ -118,16 +152,22 @@ export class ArenaScene extends Phaser.Scene implements RobotImpl {
     const px = Math.cos(rotation);
     const py = Math.sin(rotation);
 
-    // TODO: maybe want to do this outside of here if doing more than one scan!
-    this.gfx.clear();
-
+    const allOtherObjects: Phaser.GameObjects.GameObject[] = [];
+    for (const w of this.walls) {
+      allOtherObjects.push(w);
+    }
+    for (const r of this.robotHandlers) {
+      if (r.sprite !== robot) {
+        allOtherObjects.push(r.sprite);
+      }
+    }
     while (distance < range) {
       const closest = this.physics.closest(
         {
           x: currentX,
           y: currentY
         },
-        this.walls
+        allOtherObjects
       ) as Phaser.Physics.Arcade.Body;
       if (closest) {
         const dd = Phaser.Math.Distance.Between(currentX, currentY, closest.x, closest.y);
@@ -157,23 +197,5 @@ export class ArenaScene extends Phaser.Scene implements RobotImpl {
         return range + 1;
       }
     }
-  }
-
-  forward(percentage: number) {
-    this.physics.velocityFromRotation(
-      this.sprite.rotation,
-      this.robotAdapter.speedFromPercentage(percentage), // TODO: not will be robot specific
-      (this.sprite.body as Phaser.Physics.Arcade.Body).acceleration
-    );
-    this.sprite.setAngularVelocity(0);
-  }
-
-  rotate(angularVelocity: number) {
-    // TODO: normalise angularVelocity
-    this.sprite.setAngularVelocity(angularVelocity);
-  }
-
-  accelerate(xa: number, ya: number) {
-    this.sprite.setAcceleration(xa, ya);
   }
 }
