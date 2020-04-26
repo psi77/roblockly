@@ -42,7 +42,23 @@ export class GameComponent implements OnInit {
   }
 
   ngOnInit() {
+
+    let prog = '';
+    prog += 'while(true) {';
+    prog += '  var n = robot.sensor();';
+    prog += '  if (n === 0) {';
+    prog += '    robot.rotate(-300);';
+    prog += '    robot.accelerate(2, 2);';
+    prog += '  } else if (n < 100) {';
+    prog += '    robot.rotate(-50);';
+    prog += '    robot.accelerate(0, 0);';
+    prog += '  } else {';
+    prog += '    robot.rotate(0);';
+    prog += '    robot.forward(1.0);';
+    prog += '  }';
+    prog += '}';
+
     this.phaserGame = new Phaser.Game(this.config);
-    this.phaserGame.scene.start('ArenaScene', { test: 'hello' });
+    this.phaserGame.scene.start('ArenaScene', { program: prog });
   }
 }

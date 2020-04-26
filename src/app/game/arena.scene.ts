@@ -6,6 +6,9 @@ export class ArenaScene extends Phaser.Scene {
   walls: Phaser.GameObjects.GameObject[] = [];
   gfx: Phaser.GameObjects.Graphics;
 
+  program: string;
+  robotAdapter: RobotAdapter;
+
   constructor() {
     super({
       key: 'ArenaScene'
@@ -14,6 +17,7 @@ export class ArenaScene extends Phaser.Scene {
 
   init(data: any): void {
     console.log(data);
+    this.program = data.program;
   }
 
   preload(): void {
@@ -56,30 +60,34 @@ export class ArenaScene extends Phaser.Scene {
     this.gfx = this.add.graphics();
 
     // TODO: compile robot
-    const robotAdapter = new RobotAdapter(this.sprite, this.physics);
+    this.robotAdapter = new RobotAdapter(this.sprite, this.physics);
+    this.robotAdapter.compile(this.program);
   }
 
   update(time: number): void {
 
-    const nearest = this.raycast(
-      this.sprite,
-      3000
-    );
+    // const nearest = this.raycast(
+    //   this.sprite,
+    //   3000
+    // );
 
-    if (nearest === 0) {
-      this.sprite.setAngularVelocity(-300);
-      this.sprite.setAcceleration(2);
-    } else if (nearest < 60) {
-      this.sprite.setAngularVelocity(-100);
-      this.sprite.setAcceleration(0);
-    } else {
-      this.sprite.setAngularVelocity(0);
-      this.physics.velocityFromRotation(
-        this.sprite.rotation,
-        120,
-        (this.sprite.body as Phaser.Physics.Arcade.Body).acceleration
-      );
-    }
+    // if (nearest === 0) {
+    //   this.sprite.setAngularVelocity(-300);
+    //   this.sprite.setAcceleration(2);
+    // } else if (nearest < 60) {
+    //   this.sprite.setAngularVelocity(-100);
+    //   this.sprite.setAcceleration(0);
+    // } else {
+    //   this.sprite.setAngularVelocity(0);
+    //   this.physics.velocityFromRotation(
+    //     this.sprite.rotation,
+    //     120,
+    //     (this.sprite.body as Phaser.Physics.Arcade.Body).acceleration
+    //   );
+    // }
+
+    this.robotAdapter.sensorDistance = this.raycast(this.sprite, 3000);
+    this.robotAdapter.step();
 
     this.physics.world.collide(this.sprite, this.walls);
   }
