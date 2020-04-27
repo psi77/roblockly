@@ -11,6 +11,15 @@ function movementCategory(workspace) {
   return xmlList;
 }
 
+function sensorCategory(workspace) {
+  const xmlList = [];
+
+  const bt = '<block type="sensor"></block>';
+  xmlList.push(Blockly.Xml.textToDom(bt));
+
+  return xmlList;
+}
+
 @Component({
   selector: 'app-editor',
   templateUrl: './editor.component.html',
@@ -57,6 +66,8 @@ export class EditorComponent implements OnInit {
       } as any
     );
     this.workspace.registerToolboxCategoryCallback('ROBOT_MOVEMENT', movementCategory);
+    this.workspace.registerToolboxCategoryCallback('ROBOT_SENSORS', sensorCategory);
+
     // TODO: load or new
     // new
     const template = '<xml><block type="robot_base" deletable="false"></block></xml>';
@@ -73,5 +84,9 @@ export class EditorComponent implements OnInit {
     // this.programService.upsertOne(this.program);
     // this.router.navigate(['listProgram']);
     console.log('Saving now');
+
+    // TODO: temporarily create some code
+    // TODO: seems to be guessing workspace...
+    console.log(Blockly.JavaScript.workspaceToCode(this.workspace));
   }
 }

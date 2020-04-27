@@ -312,8 +312,8 @@
       <field name="DIRECTION">1</field>
     </block>
   </category>
-  <category name="Movement" custom="ROBOT_MOVEMENT" colour="#a5745b">
-  </category>
+  <category name="Movement" custom="ROBOT_MOVEMENT" colour="#a5745b"></category>
+  <category name="Sensors" custom="ROBOT_SENSORS" colour="#a0a65c"></category>
   <sep></sep>
   <category name="Variables" colour="#a55b80" custom="VARIABLE"></category>
   <category name="Functions" colour="#995ba5" custom="PROCEDURE"></category>

@@ -13,7 +13,7 @@ Blockly.Blocks['robot_base'] = {
 Blockly.JavaScript['robot_base'] = function (block) {
   var statements_name = Blockly.JavaScript.statementToCode(block, 'NAME');
   // TODO: dunno if this works!
-  var code = 'while (true) {';
+  var code = 'while (true) {\n';
   code = code + statements_name
   code = code + '};\n';
   return code;
@@ -24,7 +24,7 @@ Blockly.Blocks['sensor'] = {
     this.appendDummyInput()
       .appendField("sensor");
     this.setOutput(true, null);
-    this.setColour(230);
+    this.setColour(65);
     this.setTooltip("");
     this.setHelpUrl("");
   }
