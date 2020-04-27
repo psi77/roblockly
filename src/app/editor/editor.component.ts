@@ -57,6 +57,12 @@ export class EditorComponent implements OnInit {
       } as any
     );
     this.workspace.registerToolboxCategoryCallback('ROBOT_MOVEMENT', movementCategory);
+    // TODO: load or new
+    // new
+    const template = '<xml><block type="robot_base" deletable="false"></block></xml>';
+    Blockly.Xml.domToWorkspace(Blockly.Xml.textToDom(template), this.workspace);
+
+    this.workspace.addChangeListener(Blockly.Events.disableOrphans);
   }
 
   saveProgram(): void {
