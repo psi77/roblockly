@@ -3,18 +3,6 @@ import Phaser from 'phaser';
 import { ArenaScene } from './arena.scene';
 import { RobotAdapter } from '../models/robot.adapter';
 
-class MainScene extends Phaser.Scene {
-  constructor() {
-    super({ key: 'main' });
-  } create() {
-    console.log('create method');
-  } preload() {
-    console.log('preload method');
-  } update() {
-    console.log('update method');
-  }
-}
-
 @Component({
   selector: 'app-game',
   templateUrl: './game.component.html',
@@ -65,7 +53,6 @@ export class GameComponent implements OnInit {
   }
 
   ngOnInit() {
-
     this.phaserGame = new Phaser.Game(this.config);
     this.phaserGame.scene.start(
       'ArenaScene',
@@ -79,8 +66,8 @@ export class GameComponent implements OnInit {
   }
 
   restart() {
-    const as = this.phaserGame.scene.getScene('ArenaScene') as ArenaScene;
-    as.init(
+    const arena = this.phaserGame.scene.getScene('ArenaScene') as ArenaScene;
+    arena.init(
       {
         robotAdapters: [
           this.createRobot(-1),
@@ -88,6 +75,6 @@ export class GameComponent implements OnInit {
         ]
       }
     );
-    as.scene.restart();
+    arena.scene.restart();
   }
 }

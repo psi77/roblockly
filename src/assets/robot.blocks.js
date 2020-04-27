@@ -54,3 +54,39 @@ Blockly.JavaScript['forward'] = function (block) {
   var code = 'robot.forward(' + value_percentage +');\n';
   return code;
 };
+
+Blockly.Blocks['rotate'] = {
+  init: function () {
+    this.appendDummyInput()
+      .appendField("Rotate");
+    this.appendValueInput("velocity")
+      .setCheck("Number")
+      .appendField("velocity");
+    this.setPreviousStatement(true, null);
+    this.setNextStatement(true, null);
+    this.setColour(20);
+    this.setTooltip("");
+    this.setHelpUrl("");
+  }
+};
+Blockly.JavaScript['rotate'] = function (block) {
+  var value_velocity = Blockly.JavaScript.valueToCode(block, 'rotate', Blockly.JavaScript.ORDER_ATOMIC);
+  var code = 'robot.rotate(' + value_velocity + ');\n';
+  return code;
+};
+
+Blockly.Blocks['stop'] = {
+  init: function () {
+    this.appendDummyInput()
+      .appendField("Stop");
+    this.setPreviousStatement(true, null);
+    this.setNextStatement(true, null);
+    this.setColour(20);
+    this.setTooltip("");
+    this.setHelpUrl("");
+  }
+};
+Blockly.JavaScript['stop'] = function (block) {
+  var code = 'robot.accelerate(0, 0);\n';
+  return code;
+};

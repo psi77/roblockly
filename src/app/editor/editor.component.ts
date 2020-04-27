@@ -5,7 +5,11 @@ declare var Blockly: any;
 function movementCategory(workspace) {
   const xmlList = [];
 
-  const bt = '<block type="forward"></block>';
+  let bt = '<block type="forward"></block>';
+  xmlList.push(Blockly.Xml.textToDom(bt));
+  bt = '<block type="rotate"></block>';
+  xmlList.push(Blockly.Xml.textToDom(bt));
+  bt = '<block type="stop"></block>';
   xmlList.push(Blockly.Xml.textToDom(bt));
 
   return xmlList;
