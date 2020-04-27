@@ -38,12 +38,12 @@ class RobotHandler implements RobotImpl {
 
 export class ArenaScene extends Phaser.Scene {
 
-  walls: Phaser.GameObjects.GameObject[] = [];
+  walls: Phaser.GameObjects.GameObject[];
   gfx: Phaser.GameObjects.Graphics;
-  sprites: Phaser.Physics.Arcade.Image[] = [];
+  sprites: Phaser.Physics.Arcade.Image[];
 
-  robotAdapters: RobotAdapter[] = [];
-  robotHandlers: RobotHandler[] = [];
+  robotAdapters: RobotAdapter[];
+  robotHandlers: RobotHandler[];
 
   constructor() {
     super({
@@ -52,7 +52,16 @@ export class ArenaScene extends Phaser.Scene {
   }
 
   init(data: any): void {
+
+    this.walls = [];
+    this.gfx = null;
+    this.sprites = [];
+    this.robotHandlers = [];
+    this.robotHandlers = [];
+
     // console.log(data);
+    console.log('ArenaScene init');
+    console.log(data);
     this.robotAdapters = data.robotAdapters;
   }
 
@@ -62,6 +71,7 @@ export class ArenaScene extends Phaser.Scene {
 
   create(): void {
 
+    console.log('ArenaScene create');
     this.createWall(5, 5, 10, 600, true);
     this.createWall(15, 5, 400, 10, true);
     this.createWall(395, 15, 10, 600, true);

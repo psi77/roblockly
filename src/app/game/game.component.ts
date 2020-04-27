@@ -77,4 +77,17 @@ export class GameComponent implements OnInit {
       }
     );
   }
+
+  restart() {
+    const as = this.phaserGame.scene.getScene('ArenaScene') as ArenaScene;
+    as.init(
+      {
+        robotAdapters: [
+          this.createRobot(-1),
+          this.createRobot(1)
+        ]
+      }
+    );
+    as.scene.restart();
+  }
 }
