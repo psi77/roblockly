@@ -25,8 +25,8 @@ export class RobotAdapter {
   }
 
   speedFromPercentage(percentage: number): integer {
-    const np = Math.min(Math.max(percentage, 0.0), 1.0);
-    return this.maxSpeed * np;
+    const np = Math.min(Math.max(percentage, 0.0), 100.0);
+    return this.maxSpeed * (np / 100.0);
   }
 
   forward(percentage: number) {

@@ -54,7 +54,7 @@ export class GameComponent implements OnInit {
     prog += '    robot.accelerate(0, 0);';
     prog += '  } else {';
     prog += '    robot.rotate(0);';
-    prog += '    robot.forward(1.0);';
+    prog += '    robot.forward(100.0);';
     prog += '  }';
     prog += '}';
 

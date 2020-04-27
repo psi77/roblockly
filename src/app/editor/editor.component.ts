@@ -1,6 +1,15 @@
 import { Component, OnInit } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import * as Blockly from 'blockly';
+declare var Blockly: any;
+
+function movementCategory(workspace) {
+  const xmlList = [];
+
+  const bt = '<block type="forward"></block>';
+  xmlList.push(Blockly.Xml.textToDom(bt));
+
+  return xmlList;
+}
 
 @Component({
   selector: 'app-editor',
@@ -44,8 +53,10 @@ export class EditorComponent implements OnInit {
           wheel: true
         },
         toolbox: toolboxData
-      } as Blockly.BlocklyOptions
+      // } as Blockly.BlocklyOptions
+      } as any
     );
+    this.workspace.registerToolboxCategoryCallback('ROBOT_MOVEMENT', movementCategory);
   }
 
   saveProgram(): void {

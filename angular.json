@@ -33,7 +33,9 @@
               "src/styles.css"
             ],
             "scripts": [
-              "node_modules/phaser/dist/phaser.min.js"
+              "node_modules/phaser/dist/phaser.min.js",
+              "node_modules/blockly/blockly.min.js",
+              "src/assets/robot.blocks.js"
             ]
           },
           "configurations": {
