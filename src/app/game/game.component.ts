@@ -34,10 +34,7 @@ export class GameComponent implements OnInit {
     let prog = '';
     prog += 'while(true) {';
     prog += '  var n = robot.sensor();';
-    prog += '  if (n === 0) {';
-    prog += '    robot.rotate(-300);';
-    prog += '    robot.accelerate(2, 2);';
-    prog += '  } else if (n < 100) {';
+    prog += '  if (n < 100) {';
     prog += '    robot.rotate(' + turn + ' * n);';
     prog += '    robot.accelerate(0, 0);';
     prog += '  } else {';
