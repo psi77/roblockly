@@ -150,17 +150,20 @@ export class ArenaScene extends Phaser.Scene {
     const startY = robot.y;
     const rotation = robot.rotation;
 
-    let currentX = startX;
-    let currentY = startY;
-    let distance = 0;
-
-    if (robot.body.overlapX !== 0 || robot.body.overlapY !== 0) {
-      console.log('stuck');
-      return distance;
-    }
+    // if (robot.body.overlapX !== 0 || robot.body.overlapY !== 0) {
+    //   console.log('stuck');
+    //   return distance;
+    // }
 
     const px = Math.cos(rotation);
     const py = Math.sin(rotation);
+
+    const zone = robot.width * 0.5 * Math.SQRT2;
+
+    let currentX = (px * zone) + startX;
+    let currentY = (py * zone) + startY;
+
+    let distance = 0;
 
     const allOtherObjects: Phaser.GameObjects.GameObject[] = [];
     for (const w of this.walls) {
@@ -195,7 +198,6 @@ export class ArenaScene extends Phaser.Scene {
         currentX = nX;
         currentY = nY;
 
-        const zone = robot.width * 0.5 * Math.SQRT2;
         if (dd < zone) {
           if (this.game.config.physics.arcade.debug) {
             this.gfx.strokeCircle(nX, nY, zone);
