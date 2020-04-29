@@ -18,25 +18,6 @@ export class GameComponent implements OnInit, AfterViewInit {
 
   phaserGame: Phaser.Game;
 
-  // createRobot(turn: integer): RobotAdapter {
-  //   let prog = '';
-  //   prog += 'while(true) {';
-  //   prog += '  var n = robot.sensor();';
-  //   prog += '  if (n < 100) {';
-  //   prog += '    robot.rotate(' + turn + ' * n);';
-  //   prog += '    robot.accelerate(0, 0);';
-  //   prog += '  } else {';
-  //   prog += '    robot.rotate(0);';
-  //   prog += '    robot.forward(100.0);';
-  //   prog += '  }';
-  //   prog += '}';
-
-  //   const ra = new RobotAdapter();
-  //   ra.compile(prog);
-
-  //   return ra;
-  // }
-
   ngOnInit() {
   }
 
@@ -53,7 +34,7 @@ export class GameComponent implements OnInit, AfterViewInit {
         arcade: {
           fps: 60,
           gravity: { y: 0 },
-          debug: true
+          debug: false
         }
       },
       scene: [ArenaScene]
@@ -63,10 +44,6 @@ export class GameComponent implements OnInit, AfterViewInit {
     this.phaserGame.scene.start(
       'ArenaScene',
       {
-        // robotAdapters: [
-        //   this.createRobot(-1),
-        //   this.createRobot(1)
-        // ]
         robotAdapters: this.robotAdapters
       }
     );
@@ -74,18 +51,10 @@ export class GameComponent implements OnInit, AfterViewInit {
 
   restart() {
     const arena = this.phaserGame.scene.getScene('ArenaScene') as ArenaScene;
-    // arena.init(
-    //   {
-    //     robotAdapters: [
-    //       this.createRobot(-1),
-    //       this.createRobot(1)
-    //     ]
-    //   }
-    // );
     arena.scene.restart();
   }
 
   toggleDebug() {
-    this.phaserGame.config.physics.arcade.debug = !this.phaserGame.config.physics.arcade.debug;
+    (this.phaserGame.scene.getScene('ArenaScene') as ArenaScene).toggleDebug();
   }
 }

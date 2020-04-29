@@ -15,24 +15,22 @@ class RobotHandler implements RobotImpl {
     this.sprite = sprite;
     this.robotAdapter = robotAdapter;
     this.physics = physics;
+
+    this.sprite.setMaxVelocity(this.robotAdapter.maxSpeed);
   }
 
   forward(percentage: number) {
     this.physics.velocityFromRotation(
       this.sprite.rotation,
       this.robotAdapter.speedFromPercentage(percentage),
-      (this.sprite.body as Phaser.Physics.Arcade.Body).acceleration
+      (this.sprite.body as Phaser.Physics.Arcade.Body).velocity
     );
-    this.sprite.setAngularVelocity(0);
   }
 
   rotate(angularVelocity: number) {
+    this.sprite.angle += angularVelocity;
     // TODO: normalise angularVelocity
-    this.sprite.setAngularVelocity(angularVelocity);
-  }
-
-  accelerate(xa: number, ya: number) {
-    this.sprite.setAcceleration(xa, ya);
+    // this.sprite.setAngularVelocity(angularVelocity);
   }
 }
 
@@ -41,6 +39,8 @@ export class ArenaScene extends Phaser.Scene {
   walls: Phaser.GameObjects.GameObject[];
   gfx: Phaser.GameObjects.Graphics;
   sprites: Phaser.Physics.Arcade.Image[];
+  text: Phaser.GameObjects.Text;
+  debug = false;
 
   robotAdapters: RobotAdapter[];
   robotHandlers: RobotHandler[];
@@ -51,6 +51,10 @@ export class ArenaScene extends Phaser.Scene {
     });
   }
 
+  toggleDebug() {
+    this.debug = !this.debug;
+  }
+
   init(data: any): void {
 
     this.walls = [];
@@ -59,7 +63,6 @@ export class ArenaScene extends Phaser.Scene {
     this.robotHandlers = [];
     this.robotHandlers = [];
 
-    // console.log(data);
     console.log('ArenaScene init');
     console.log(data);
     this.robotAdapters = data.robotAdapters;
@@ -99,6 +102,8 @@ export class ArenaScene extends Phaser.Scene {
     this.gfx = this.add.graphics();
 
     this.createRobots();
+
+    this.text = this.add.text(350, 270, '', { font: '9px Courier', fill: '#00ff00' });
   }
 
   createRobots() {
@@ -107,13 +112,12 @@ export class ArenaScene extends Phaser.Scene {
     let y = 50;
     for (const adapter of this.robotAdapters) {
       const sprite = this.physics.add.image(x, y, 'ship');
-      sprite.setBounce(0.2);
 
-      sprite.setDamping(true);
-      sprite.setDrag(0.5);
+      // TODO: move to RobotHandler? dependant on drive type
+      // sprite.setDamping(true);
+      // sprite.setDrag(0.5);
       // sprite.setAngularDrag(0.2);
 
-      sprite.setMaxVelocity(120);
       x += sprite.width + 10;
       y += sprite.height + 10;
 
@@ -128,12 +132,27 @@ export class ArenaScene extends Phaser.Scene {
 
     this.gfx.clear();
 
-    // TODO: setter for all stuff
     for (const handler of this.robotHandlers) {
+      // TODO: setter for all stuff
       handler.robotAdapter.sensorDistance = this.raycast(handler.sprite, 3000);
       handler.robotAdapter.step();
       this.physics.world.collide(handler.sprite, this.walls);
       this.physics.world.collide(handler.sprite, this.sprites);
+    }
+
+    if (this.debug) {
+      // TODO: for each robot!
+      const ra = this.robotAdapters[0];
+      const ts = this.robotHandlers[0].sprite;
+      this.text.setPosition(ts.x - ts.width, ts.y + ts.height / 2);
+      this.text.setText([
+        'Rotation: ' + Math.floor(ts.angle),
+        'Sensor: ' + Math.floor(ra.sensorDistance),
+        'Speed: ' + Math.floor((ts.body as Phaser.Physics.Arcade.Body).speed),
+      ]);
+      this.text.setVisible(true);
+    } else {
+      this.text.setVisible(false);
     }
   }
 
@@ -184,8 +203,7 @@ export class ArenaScene extends Phaser.Scene {
         const dd = Phaser.Math.Distance.Between(currentX, currentY, closest.x, closest.y);
 
         if (dd <= zone) {
-          if (this.game.config.physics.arcade.debug) {
-            // this.gfx.strokeCircle(nX, nY, zone);
+          if (this.debug) {
             this.gfx.strokeCircle(currentX, currentY, zone);
           }
           return distance;
@@ -195,7 +213,7 @@ export class ArenaScene extends Phaser.Scene {
         const nX = (px * dd) + currentX;
         const nY = (py * dd) + currentY;
 
-        if (this.game.config.physics.arcade.debug) {
+        if (this.debug) {
           this.gfx.lineStyle(2, 0xff3300)
             .strokeCircle(currentX, currentY, dd)
             .lineBetween(closest.x, closest.y, currentX, currentY)

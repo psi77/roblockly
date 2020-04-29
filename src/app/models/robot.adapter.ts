@@ -1,18 +1,16 @@
-import Phaser from 'phaser';
 import Interpreter from 'js-interpreter';
 
 export interface RobotImpl {
   forward(percentage: number): void;
 
-  rotate(angularVelocity: number): void;
-
-  accelerate(xa: number, ya: number): void;
+  rotate(percentage: number): void;
 }
 
 export class RobotAdapter {
 
   // TODO: add in robot stats, armour, ammo?, cpu speed etc
-  maxSpeed: integer = 100;
+  maxSpeed: integer = 120;
+  maxRotation: integer = 5;
   sensorDistance: number;
 
   robotImpl: RobotImpl;
@@ -36,18 +34,17 @@ export class RobotAdapter {
     return this.maxSpeed * (np / 100.0);
   }
 
+  angleFromPercentage(percentage: number): integer {
+    const np = this.clampNumber(percentage, -100.0, 100.0);
+    return this.maxRotation * (np / 100.0);
+  }
+
   forward(percentage: number) {
     this.robotImpl.forward(percentage);
   }
 
-  rotate(angularVelocity: number) {
-    // TODO: max rotation
-    const av = this.clampNumber(angularVelocity, -600.0, 600.0);
-    this.robotImpl.rotate(av);
-  }
-
-  accelerate(xa: number, ya: number) {
-    this.robotImpl.accelerate(xa, ya);
+  rotate(percentage: number) {
+    this.robotImpl.rotate(this.angleFromPercentage(percentage));
   }
 
   compile(program: string) {
@@ -67,23 +64,13 @@ export class RobotAdapter {
       );
 
       // rotate
-      const rw = (velocity) => {
-        return adapter.rotate(velocity);
+      const rw = (percentage) => {
+        return adapter.rotate(percentage);
       };
       interpreter.setProperty(
         robot,
         'rotate',
         interpreter.createNativeFunction(rw)
-      );
-
-      // acceleration
-      const aw = (xa, ya) => {
-        return adapter.accelerate(xa, ya);
-      };
-      interpreter.setProperty(
-        robot,
-        'accelerate',
-        interpreter.createNativeFunction(aw)
       );
 
       // scanner
@@ -95,7 +82,6 @@ export class RobotAdapter {
         'sensor',
         interpreter.createNativeFunction(sw)
       );
-
     };
     this.interpreter = new Interpreter(program, initFunc);
   }
@@ -107,5 +93,7 @@ export class RobotAdapter {
         this.interpreter.step();
       }
     }
+
+    // TODO: dual core! :)
   }
 }
