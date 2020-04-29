@@ -6,7 +6,6 @@ import { DevelopmentComponent } from './development/development.component';
 
 const routes: Routes = [
   { path: 'editor', component: DevelopmentComponent },
-  { path: 'game', component: GameComponent },
   { path: '', redirectTo: '/editor', pathMatch: 'full' },
   { path: '**', component: GameComponent },
 ];

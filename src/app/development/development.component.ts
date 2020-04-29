@@ -1,4 +1,5 @@
 import { Component, OnInit } from '@angular/core';
+import { RobotAdapter } from '../models/robot.adapter';
 
 @Component({
   selector: 'app-development',
@@ -7,12 +8,21 @@ import { Component, OnInit } from '@angular/core';
 })
 export class DevelopmentComponent implements OnInit {
 
-  constructor() { }
+  robotAdapter: RobotAdapter;
+
+  constructor() {
+    this.robotAdapter = new RobotAdapter();
+  }
 
   ngOnInit(): void {
   }
 
   codeChanged(compiledCode: string) {
-    console.log(compiledCode);
+    // console.log(compiledCode);
+    this.robotAdapter.compile(compiledCode);
+  }
+
+  getRobotAdapters() {
+    return [this.robotAdapter];
   }
 }

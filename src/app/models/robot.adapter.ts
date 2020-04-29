@@ -24,8 +24,15 @@ export class RobotAdapter {
     this.robotImpl = robotImpl;
   }
 
+  clampNumber(n: number, bottom: number, top: number): number {
+    if (isNaN(n)) {
+      n = 0;
+    }
+    return Math.min(Math.max(n, bottom), top);
+  }
+
   speedFromPercentage(percentage: number): integer {
-    const np = Math.min(Math.max(percentage, 0.0), 100.0);
+    const np = this.clampNumber(percentage, 0.0, 100.0);
     return this.maxSpeed * (np / 100.0);
   }
 
@@ -34,7 +41,9 @@ export class RobotAdapter {
   }
 
   rotate(angularVelocity: number) {
-    this.robotImpl.rotate(angularVelocity);
+    // TODO: max rotation
+    const av = this.clampNumber(angularVelocity, -600.0, 600.0);
+    this.robotImpl.rotate(av);
   }
 
   accelerate(xa: number, ya: number) {
@@ -93,9 +102,10 @@ export class RobotAdapter {
 
   step() {
     // TODO: cpu, better takes more steps
-
-    for (let n = 0; n < 5; n++) {
-      this.interpreter.step();
+    if (this.interpreter) {
+      for (let n = 0; n < 5; n++) {
+        this.interpreter.step();
+      }
     }
   }
 }

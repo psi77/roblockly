@@ -70,7 +70,7 @@ Blockly.Blocks['rotate'] = {
   }
 };
 Blockly.JavaScript['rotate'] = function (block) {
-  var value_velocity = Blockly.JavaScript.valueToCode(block, 'rotate', Blockly.JavaScript.ORDER_ATOMIC);
+  var value_velocity = Blockly.JavaScript.valueToCode(block, 'velocity', Blockly.JavaScript.ORDER_ATOMIC);
   var code = 'robot.rotate(' + value_velocity + ');\n';
   return code;
 };
