@@ -1,9 +1,12 @@
 <div class="container">
   <mat-toolbar class="mat-elevation-z4" color="primary" fxLayout="row" fxLayoutAlign="start center">
     <span fxFlex>Test Title - *prog name*</span>
-    <div fxFlex fxLayout="row" fxLayoutAlign="end start">
+    <div fxFlex fxLayout="row" fxLayoutAlign="end start" fxLayoutGap="10px">
       <button mat-flat-button>
         Save
+      </button>
+      <button mat-flat-button (click)="restart()">
+        Restart
       </button>
     </div>
   </mat-toolbar>

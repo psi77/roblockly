@@ -1,5 +1,6 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ViewChild } from '@angular/core';
 import { RobotAdapter } from '../models/robot.adapter';
+import { GameComponent } from '../game/game.component';
 
 @Component({
   selector: 'app-development',
@@ -7,6 +8,9 @@ import { RobotAdapter } from '../models/robot.adapter';
   styleUrls: ['./development.component.css']
 })
 export class DevelopmentComponent implements OnInit {
+
+  @ViewChild(GameComponent)
+  gameComponent: GameComponent;
 
   robotAdapter: RobotAdapter;
 
@@ -24,5 +28,9 @@ export class DevelopmentComponent implements OnInit {
 
   getRobotAdapters() {
     return [this.robotAdapter];
+  }
+
+  restart() {
+    this.gameComponent.restart();
   }
 }

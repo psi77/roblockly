@@ -110,7 +110,7 @@ export class ArenaScene extends Phaser.Scene {
       sprite.setBounce(0.2);
       sprite.setDamping(true);
       sprite.setDrag(0.50);
-      sprite.setAngularDrag(0.50);
+      // sprite.setAngularDrag(0.50);
       sprite.setMaxVelocity(120);
       x += sprite.width + 10;
       y += sprite.height + 10;
