@@ -45,7 +45,6 @@ export class GameComponent implements OnInit, AfterViewInit {
       parent: canvasDivElement,
       width: 400,
       height: 600,
-      // canvas: canvas as HTMLCanvasElement,
       physics: {
         default: 'arcade',
         arcade: {

@@ -12,4 +12,7 @@ export class DevelopmentComponent implements OnInit {
   ngOnInit(): void {
   }
 
+  codeChanged(compiledCode: string) {
+    console.log(compiledCode);
+  }
 }

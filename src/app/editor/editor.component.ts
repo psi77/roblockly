@@ -1,5 +1,6 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, Output, EventEmitter } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
+
 declare var Blockly: any;
 
 function movementCategory(workspace) {
@@ -33,6 +34,9 @@ export class EditorComponent implements OnInit {
 
   workspace: any;
 
+  @Output()
+  compiledCode = new EventEmitter<string>();
+
   constructor(private http: HttpClient) { }
 
   ngOnInit() {
@@ -43,7 +47,7 @@ export class EditorComponent implements OnInit {
       {
         responseType: 'text'
       }
-    ).subscribe(this.postInit);
+    ).subscribe(this.postInit.bind(this));
   }
 
   postInit(toolboxData: any) {
@@ -70,7 +74,13 @@ export class EditorComponent implements OnInit {
     const template = '<xml><block type="robot_base" deletable="false"></block></xml>';
     Blockly.Xml.domToWorkspace(Blockly.Xml.textToDom(template), this.workspace);
 
+    this.workspace.addChangeListener(this.codeUpdate.bind(this));
     this.workspace.addChangeListener(Blockly.Events.disableOrphans);
+  }
+
+  codeUpdate(event: any) {
+    const code = Blockly.JavaScript.workspaceToCode(this.workspace);
+    this.compiledCode.emit(code);
   }
 
   saveProgram(): void {
@@ -84,6 +94,6 @@ export class EditorComponent implements OnInit {
 
     // TODO: temporarily create some code
     // TODO: seems to be guessing workspace...
-    console.log(Blockly.JavaScript.workspaceToCode(this.workspace));
+    // console.log(Blockly.JavaScript.workspaceToCode(this.workspace));
   }
 }
