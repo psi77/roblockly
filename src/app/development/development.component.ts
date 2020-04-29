@@ -33,4 +33,8 @@ export class DevelopmentComponent implements OnInit {
   restart() {
     this.gameComponent.restart();
   }
+
+  toggleDebug() {
+    this.gameComponent.toggleDebug();
+  }
 }

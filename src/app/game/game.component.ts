@@ -84,4 +84,8 @@ export class GameComponent implements OnInit, AfterViewInit {
     // );
     arena.scene.restart();
   }
+
+  toggleDebug() {
+    this.phaserGame.config.physics.arcade.debug = !this.phaserGame.config.physics.arcade.debug;
+  }
 }
