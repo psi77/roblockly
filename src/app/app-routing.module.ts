@@ -5,9 +5,9 @@ import { DevelopmentComponent } from './development/development.component';
 
 
 const routes: Routes = [
-  { path: 'game', component: GameComponent },
   { path: 'editor', component: DevelopmentComponent },
-  { path: '', redirectTo: '/game', pathMatch: 'full' },
+  { path: 'game', component: GameComponent },
+  { path: '', redirectTo: '/editor', pathMatch: 'full' },
   { path: '**', component: GameComponent },
 ];
 
