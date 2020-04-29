@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ViewChild, ElementRef, AfterViewInit } from '@angular/core';
 import Phaser from 'phaser';
 import { ArenaScene } from './arena.scene';
 import { RobotAdapter } from '../models/robot.adapter';
@@ -8,27 +8,12 @@ import { RobotAdapter } from '../models/robot.adapter';
   templateUrl: './game.component.html',
   styleUrls: ['./game.component.css']
 })
-export class GameComponent implements OnInit {
+export class GameComponent implements OnInit, AfterViewInit {
+
+  @ViewChild('gameCanvasDiv')
+  gameCanvasDivElementRef: ElementRef;
 
   phaserGame: Phaser.Game;
-  config: Phaser.Types.Core.GameConfig; constructor() {
-    this.config = {
-      type: Phaser.AUTO,
-      title: 'BattleArena',
-      parent: 'game',
-      width: 400,
-      height: 600,
-      physics: {
-        default: 'arcade',
-        arcade: {
-          fps: 60,
-          gravity: { y: 0 },
-          debug: true
-        }
-      },
-      scene: [ArenaScene]
-    };
-  }
 
   createRobot(turn: integer): RobotAdapter {
     let prog = '';
@@ -50,7 +35,29 @@ export class GameComponent implements OnInit {
   }
 
   ngOnInit() {
-    this.phaserGame = new Phaser.Game(this.config);
+  }
+
+  ngAfterViewInit() {
+    const canvasDivElement = this.gameCanvasDivElementRef.nativeElement;
+    const config = {
+      type: Phaser.AUTO,
+      title: 'BattleArena',
+      parent: canvasDivElement,
+      width: 400,
+      height: 600,
+      // canvas: canvas as HTMLCanvasElement,
+      physics: {
+        default: 'arcade',
+        arcade: {
+          fps: 60,
+          gravity: { y: 0 },
+          debug: true
+        }
+      },
+      scene: [ArenaScene]
+    };
+
+    this.phaserGame = new Phaser.Game(config);
     this.phaserGame.scene.start(
       'ArenaScene',
       {

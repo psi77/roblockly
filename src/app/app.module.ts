@@ -6,28 +6,21 @@ import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
 import { GameComponent } from './game/game.component';
 import { EditorComponent } from './editor/editor.component';
+import { DevelopmentComponent } from './development/development.component';
+
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { FlexLayoutModule } from '@angular/flex-layout';
-// import { FormsModule } from '@angular/forms';
 
 import { MatCardModule } from '@angular/material/card';
 import { MatButtonModule } from '@angular/material/button';
-import { MatDividerModule } from '@angular/material/divider';
-import { MatTableModule } from '@angular/material/table';
-import { MatPaginatorModule } from '@angular/material/paginator';
-import { MatSortModule } from '@angular/material/sort';
-import { MatIconModule } from '@angular/material/icon';
-import { MatToolbarModule } from '@angular/material/toolbar';
-import { MatDialogModule } from '@angular/material/dialog';
-import { MatFormFieldModule } from '@angular/material/form-field';
-import { MatInputModule } from '@angular/material/input';
-import { MatSidenavModule } from '@angular/material/sidenav';
+import { MatGridListModule } from '@angular/material/grid-list';
 
 @NgModule({
   declarations: [
     AppComponent,
     GameComponent,
-    EditorComponent
+    EditorComponent,
+    DevelopmentComponent
   ],
   imports: [
     BrowserModule,
@@ -38,16 +31,7 @@ import { MatSidenavModule } from '@angular/material/sidenav';
 
     MatCardModule,
     MatButtonModule,
-    MatDividerModule,
-    MatTableModule,
-    MatPaginatorModule,
-    MatSortModule,
-    MatIconModule,
-    MatToolbarModule,
-    MatDialogModule,
-    MatFormFieldModule,
-    MatInputModule,
-    MatSidenavModule
+    MatGridListModule
 
   ],
   providers: [],

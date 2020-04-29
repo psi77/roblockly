@@ -37,13 +37,6 @@ export class EditorComponent implements OnInit {
 
   ngOnInit() {
 
-    // const xmlDoc = document.implementation.createDocument('', '', null);
-    // const root = xmlDoc.createElement('xml');
-    // const b1 = xmlDoc.createElement('block');
-    // b1.setAttribute('type', 'controls_if');
-    // root.appendChild(b1);
-    // then use root.outerHTML
-
     // TODO: cache this somewhere so we only load it once
     this.http.get(
       'assets/toolbox.xml',
