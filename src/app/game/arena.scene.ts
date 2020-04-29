@@ -108,9 +108,11 @@ export class ArenaScene extends Phaser.Scene {
     for (const adapter of this.robotAdapters) {
       const sprite = this.physics.add.image(x, y, 'ship');
       sprite.setBounce(0.2);
+
       sprite.setDamping(true);
-      sprite.setDrag(0.50);
-      // sprite.setAngularDrag(0.50);
+      sprite.setDrag(0.5);
+      // sprite.setAngularDrag(0.2);
+
       sprite.setMaxVelocity(120);
       x += sprite.width + 10;
       y += sprite.height + 10;
@@ -151,11 +153,6 @@ export class ArenaScene extends Phaser.Scene {
     const startY = robot.y;
     const rotation = robot.rotation;
 
-    // if (robot.body.overlapX !== 0 || robot.body.overlapY !== 0) {
-    //   console.log('stuck');
-    //   return distance;
-    // }
-
     const px = Math.cos(rotation);
     const py = Math.sin(rotation);
 
@@ -185,6 +182,15 @@ export class ArenaScene extends Phaser.Scene {
       ) as Phaser.Physics.Arcade.Body;
       if (closest) {
         const dd = Phaser.Math.Distance.Between(currentX, currentY, closest.x, closest.y);
+
+        if (dd <= zone) {
+          if (this.game.config.physics.arcade.debug) {
+            // this.gfx.strokeCircle(nX, nY, zone);
+            this.gfx.strokeCircle(currentX, currentY, zone);
+          }
+          return distance;
+        }
+
         distance += dd;
         const nX = (px * dd) + currentX;
         const nY = (py * dd) + currentY;
@@ -198,13 +204,6 @@ export class ArenaScene extends Phaser.Scene {
         }
         currentX = nX;
         currentY = nY;
-
-        if (dd < zone) {
-          if (this.game.config.physics.arcade.debug) {
-            this.gfx.strokeCircle(nX, nY, zone);
-          }
-          return distance;
-        }
 
       } else {
         return range + 1;
