@@ -1,26 +1,19 @@
 import Interpreter from 'js-interpreter';
 
-export interface RobotImpl {
-  forward(percentage: number): void;
-
-  rotate(percentage: number): void;
-}
-
 export class RobotAdapter {
 
   // TODO: add in robot stats, armour, ammo?, cpu speed etc
-  maxSpeed: integer = 120;
-  maxRotation: integer = 5;
+  maxSpeed = 0.04;
+  maxRotation = 0.02;
   sensorDistance: number;
+  sensorBias: integer;
 
-  robotImpl: RobotImpl;
+  thrust = 0.0;
+  angularVelocity = 0.0;
+
   interpreter: any;
 
   constructor() {}
-
-  setRobotImpl(robotImpl: RobotImpl) {
-    this.robotImpl = robotImpl;
-  }
 
   clampNumber(n: number, bottom: number, top: number): number {
     if (isNaN(n)) {
@@ -40,11 +33,11 @@ export class RobotAdapter {
   }
 
   forward(percentage: number) {
-    this.robotImpl.forward(percentage);
+    this.thrust = this.speedFromPercentage(percentage);
   }
 
   rotate(percentage: number) {
-    this.robotImpl.rotate(this.angleFromPercentage(percentage));
+    this.angularVelocity = this.angleFromPercentage(percentage);
   }
 
   compile(program: string) {
@@ -73,7 +66,7 @@ export class RobotAdapter {
         interpreter.createNativeFunction(rw)
       );
 
-      // scanner
+      // sensor
       const sw = () => {
         return adapter.sensorDistance;
       };
@@ -81,6 +74,16 @@ export class RobotAdapter {
         robot,
         'sensor',
         interpreter.createNativeFunction(sw)
+      );
+
+      // bias
+      const bw = () => {
+        return adapter.sensorBias;
+      };
+      interpreter.setProperty(
+        robot,
+        'bias',
+        interpreter.createNativeFunction(bw)
       );
     };
     this.interpreter = new Interpreter(program, initFunc);

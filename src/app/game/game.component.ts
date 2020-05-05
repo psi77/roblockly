@@ -30,12 +30,14 @@ export class GameComponent implements OnInit, AfterViewInit {
       width: 400,
       height: 600,
       physics: {
-        default: 'arcade',
-        arcade: {
-          fps: 60,
-          gravity: { y: 0 },
-          debug: false
-        }
+          default: 'matter',
+          matter: {
+              debug: true,
+              gravity: {
+                  x: 0,
+                  y: 0
+              }
+          }
       },
       scene: [ArenaScene]
     };

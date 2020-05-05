@@ -52,7 +52,7 @@
   </category>
   <category name="Math" colour="#5b67a5">
     <block type="math_number">
-      <field name="NUM">0</field>
+      <field name="NUM">100</field>
     </block>
     <block type="math_arithmetic">
       <field name="OP">ADD</field>

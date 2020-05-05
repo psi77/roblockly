@@ -34,6 +34,22 @@ Blockly.JavaScript['sensor'] = function (block) {
   return [code, Blockly.JavaScript.ORDER_NONE];
 }
 
+Blockly.Blocks['bias'] = {
+  init: function () {
+    this.appendDummyInput()
+      .appendField("bias");
+    this.setOutput(true, null);
+    this.setColour(65);
+    this.setTooltip("");
+    this.setHelpUrl("");
+  }
+};
+Blockly.JavaScript['bias'] = function (block) {
+  var code = 'robot.bias()';
+  // TODO: Change ORDER_NONE to the correct strength.
+  return [code, Blockly.JavaScript.ORDER_NONE];
+}
+
 Blockly.Blocks['forward'] = {
   init: function () {
     this.appendDummyInput()

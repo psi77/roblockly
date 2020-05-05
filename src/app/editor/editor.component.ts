@@ -19,9 +19,10 @@ function movementCategory(workspace) {
 function sensorCategory(workspace) {
   const xmlList = [];
 
-  const bt = '<block type="sensor"></block>';
+  let bt = '<block type="sensor"></block>';
   xmlList.push(Blockly.Xml.textToDom(bt));
-
+  bt = '<block type="bias"></block>';
+  xmlList.push(Blockly.Xml.textToDom(bt));
   return xmlList;
 }
 
