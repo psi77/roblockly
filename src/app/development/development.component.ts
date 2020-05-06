@@ -1,6 +1,7 @@
 import { Component, OnInit, ViewChild } from '@angular/core';
 import { RobotAdapter } from '../models/robot.adapter';
 import { GameComponent } from '../game/game.component';
+import { DebugService } from '../debug.service';
 
 @Component({
   selector: 'app-development',
@@ -14,8 +15,8 @@ export class DevelopmentComponent implements OnInit {
 
   robotAdapter: RobotAdapter;
 
-  constructor() {
-    this.robotAdapter = new RobotAdapter();
+  constructor(private debugService: DebugService) {
+    this.robotAdapter = new RobotAdapter(debugService);
   }
 
   ngOnInit(): void {
@@ -27,7 +28,7 @@ export class DevelopmentComponent implements OnInit {
   }
 
   getRobotAdapters() {
-    return [this.robotAdapter];
+    return [this.robotAdapter, new RobotAdapter(this.debugService)];
   }
 
   restart() {

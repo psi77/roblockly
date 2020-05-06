@@ -32,6 +32,9 @@ export class GameComponent implements OnInit, AfterViewInit {
       physics: {
           default: 'matter',
           matter: {
+              // debug: {
+              //   showBounds: true
+              // },
               debug: true,
               gravity: {
                   x: 0,

@@ -1,5 +1,6 @@
 import { Component, OnInit, Output, EventEmitter } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
+import { DebugService } from '../debug.service';
 
 declare var Blockly: any;
 
@@ -38,7 +39,7 @@ export class EditorComponent implements OnInit {
   @Output()
   compiledCode = new EventEmitter<string>();
 
-  constructor(private http: HttpClient) { }
+  constructor(private http: HttpClient, private debugService: DebugService) { }
 
   ngOnInit() {
 
@@ -77,9 +78,23 @@ export class EditorComponent implements OnInit {
 
     this.workspace.addChangeListener(this.codeUpdate.bind(this));
     this.workspace.addChangeListener(Blockly.Events.disableOrphans);
+
+    const ref = this;
+    this.debugService.highlightSubject.subscribe({
+      next(blockId) {
+        ref.highlightCode(blockId);
+      },
+      error(err) { console.error('Debug error: ' + err); },
+      complete() {}
+    });
+  }
+
+  highlightCode = (blockId: string) => {
+    this.workspace.highlightBlock(blockId);
   }
 
   codeUpdate(event: any) {
+    Blockly.JavaScript.STATEMENT_PREFIX = 'robot.debug(%1);\n';
     const code = Blockly.JavaScript.workspaceToCode(this.workspace);
     this.compiledCode.emit(code);
   }

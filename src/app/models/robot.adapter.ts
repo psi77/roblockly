@@ -1,6 +1,9 @@
 import Interpreter from 'js-interpreter';
+import { DebugService } from '../debug.service';
 
 export class RobotAdapter {
+
+  private debugService: DebugService;
 
   // TODO: add in robot stats, armour, ammo?, cpu speed etc
   maxSpeed = 0.04;
@@ -13,7 +16,9 @@ export class RobotAdapter {
 
   interpreter: any;
 
-  constructor() {}
+  constructor(debugService: DebugService) {
+    this.debugService = debugService;
+  }
 
   clampNumber(n: number, bottom: number, top: number): number {
     if (isNaN(n)) {
@@ -40,11 +45,25 @@ export class RobotAdapter {
     this.angularVelocity = this.angleFromPercentage(percentage);
   }
 
+  debugCode(id: string) {
+    this.debugService.highlight(id);
+  }
+
   compile(program: string) {
     const adapter = this;
     const initFunc = (interpreter, globalObject) => {
       const robot = interpreter.nativeToPseudo({});
       interpreter.setProperty(globalObject, 'robot', robot);
+
+      // highlight block
+      const hb = (id) => {
+        return adapter.debugCode(id);
+      };
+      interpreter.setProperty(
+        robot,
+        'debug',
+        interpreter.createNativeFunction(hb)
+      );
 
       // forward
       const fw = (percentage) => {

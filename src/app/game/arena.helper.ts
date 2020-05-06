@@ -178,23 +178,25 @@ export class ArenaHelper {
     // TODO: sin cos lookup
   }
 
-  // TODO: factor this lot out into a helper which we can add a sin/cos lookup to
   distanceToNearest(origin: Phaser.Physics.Matter.Image, maxRange: integer): DaB {
 
     // TODO: use lookup
     const sr = Math.sin(origin.rotation);
     const cr = Math.cos(origin.rotation);
 
-    const oex = origin.x + maxRange + (origin.width / 2.0);
-    const oey = origin.y;
+    const fsx = origin.x + (origin.width * cr / 2.0);
+    const fsy = origin.y + (origin.width * sr / 2.0);
 
-    const endX = origin.x + (oex * cr) - (oey * sr);
-    const endY = origin.y + (oex * sr) + (oey * cr);
+    const oex = maxRange + (origin.width / 2.0);
+    const endX = origin.x + (oex * cr);
+    const endY = origin.y + (oex * sr);
 
     const rayWidth = origin.width;
 
-    // TODO: there may be a bug here where sometimes the scanner doesn't see some blocks... :(
-    const bodies = this.arenaScene.matter.intersectRay(origin.x, origin.y, endX, endY, rayWidth);
+    if (this.arenaScene.debug) {
+      this.arenaScene.gfx.lineStyle(rayWidth, 0xff00ff, 0.2).lineBetween(fsx, fsy, endX, endY);
+    }
+    const bodies = this.arenaScene.matter.intersectRay(fsx, fsy, endX, endY, rayWidth);
 
     let closestDistance = maxRange * maxRange;
     let closestPoint: Phaser.Geom.Point = null;
