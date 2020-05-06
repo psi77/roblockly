@@ -1,5 +1,45 @@
 import { ArenaScene } from './arena.scene';
 
+class SinCosLookup {
+
+  public static inst = new SinCosLookup();
+
+  LENGTH = 3600.0;
+  FACTOR = this.LENGTH / 360.0;
+  pSin: number[];
+  pCos: number[];
+
+  constructor() {
+    this.init();
+  }
+
+  init() {
+    this.pSin = [this.LENGTH];
+    this.pCos = [this.LENGTH];
+    let sv = 0;
+    let cv = 1;
+    const freq = 2 * Math.PI / this.LENGTH;
+    for (let n = 0; n < this.LENGTH; n++) {
+      this.pSin[n] = sv;
+      this.pCos[n] = cv;
+      cv -= sv * freq;
+      sv += cv * freq;
+    }
+  }
+
+  private toIndex(degrees: number): integer {
+    return (Math.floor(degrees * this.FACTOR) + this.LENGTH) % this.LENGTH;
+  }
+
+  sin(degrees: number): number {
+    return this.pSin[this.toIndex(degrees)];
+  }
+
+  cos(degrees: number): number {
+    return this.pCos[this.toIndex(degrees)];
+  }
+}
+
 class DaP {
   distance: number;
   point: Phaser.Geom.Point;
@@ -123,10 +163,10 @@ class RayFinder {
       gfx.strokeCircle(this.rayStart.x, this.rayStart.y, 2);
   }
 
-  distanceAndPoint(x: integer, y: integer, width: integer, height: integer, rotation: number): DaP {  // TODO: need type for bounds!
+  distanceAndPoint(x: integer, y: integer, width: integer, height: integer, degrees: number): DaP {  // TODO: need type for bounds!
 
-    const s = Math.sin(-rotation);
-    const c = Math.cos(-rotation);
+    const s = SinCosLookup.inst.sin(-degrees);
+    const c = SinCosLookup.inst.cos(-degrees);
 
     // translate
     const tsx = this.rayStart.x - x;
@@ -158,8 +198,8 @@ class RayFinder {
     if (ray !== undefined) {
       const dist = Phaser.Math.Distance.BetweenPointsSquared(new Phaser.Geom.Point(rsx, rsy), ray);
       // translate point back
-      const ic = Math.cos(rotation);
-      const is = Math.sin(rotation);
+      const ic = SinCosLookup.inst.cos(degrees);
+      const is = SinCosLookup.inst.sin(degrees);
       const nx = (ray.x * ic) - (ray.y * is);
       const ny = (ray.x * is) + (ray.y * ic);
       return new DaP(dist, new Phaser.Geom.Point(x + nx, y + ny));
@@ -181,8 +221,8 @@ export class ArenaHelper {
   distanceToNearest(origin: Phaser.Physics.Matter.Image, maxRange: integer): DaB {
 
     // TODO: use lookup
-    const sr = Math.sin(origin.rotation);
-    const cr = Math.cos(origin.rotation);
+    const sr = SinCosLookup.inst.sin(origin.angle);
+    const cr = SinCosLookup.inst.cos(origin.angle);
 
     const fsx = origin.x + (origin.width * cr / 2.0);
     const fsy = origin.y + (origin.width * sr / 2.0);
@@ -223,7 +263,7 @@ export class ArenaHelper {
         const w = (bod as any).gameObject._scaleX * (bod as any).gameObject.width;
         const h = (bod as any).gameObject._scaleY * (bod as any).gameObject.height;
         const r = (bod as any).angle;
-
+        const degrees = r * 180.0 / Math.PI;
         if (this.arenaScene.debug) {
           const gfx = this.arenaScene.gfx;
 
@@ -237,7 +277,7 @@ export class ArenaHelper {
         }
 
         for (const ray of rays) {
-          const dap = ray.distanceAndPoint(pos.x, pos.y, w, h, r);
+          const dap = ray.distanceAndPoint(pos.x, pos.y, w, h, degrees);
           if (dap !== undefined && this.arenaScene.debug) {
             this.arenaScene.gfx.strokeCircle(dap.point.x, dap.point.y, 3);
           }

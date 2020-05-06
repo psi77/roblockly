@@ -28,7 +28,7 @@ export class DevelopmentComponent implements OnInit {
   }
 
   getRobotAdapters() {
-    return [this.robotAdapter, new RobotAdapter(this.debugService)];
+    return [new RobotAdapter(this.debugService), this.robotAdapter];
   }
 
   restart() {
