@@ -79,13 +79,10 @@ export class EditorComponent implements OnInit {
     this.workspace.addChangeListener(this.codeUpdate.bind(this));
     this.workspace.addChangeListener(Blockly.Events.disableOrphans);
 
-    const ref = this;
     this.debugService.highlightSubject.subscribe({
-      next(blockId) {
-        ref.highlightCode(blockId);
-      },
-      error(err) { console.error('Debug error: ' + err); },
-      complete() {}
+      next: blockId => this.highlightCode(blockId),
+      error: err => console.error(`Error from debug service: ${err}`),
+      complete: () => console.log('Debug service complete')
     });
   }
 
