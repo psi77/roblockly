@@ -1,0 +1,52 @@
+# Node.js with Angular
+# Build a Node.js project that uses Angular.
+# Add steps that analyze code, save build artifacts, deploy, and more:
+# https://docs.microsoft.com/azure/devops/pipelines/languages/javascript
+
+jobs:
+- job: BuildAndTest
+  pool:
+    vmImage: 'Ubuntu 16.04'
+
+  condition: ne(variables['Build.SourceBranch'], 'refs/heads/gh-pages')
+
+  steps:
+  - task: NodeTool@0
+    inputs:
+      versionSpec: '10.13'
+    displayName: 'Install Node.js'
+
+  - script: |
+      npm install -g @angular/cli
+      npm install
+    displayName: 'npm install'
+  - script: |
+      ng lint
+    displayName: 'tslint'
+  - script: |
+      ng build --prod
+    displayName: 'build distribution'
+
+- job: Deploy
+  dependsOn: BuildAndTest
+  pool:
+    vmImage: 'Ubuntu 16.04'
+  condition: and(succeeded(), eq(variables['Build.SourceBranch'], 'refs/heads/develop'))
+
+  steps:
+  - task: NodeTool@0
+    inputs:
+      versionSpec: '10.13'
+    displayName: 'Install Node.js'
+
+  - script: |
+      npm install -g @angular/cli
+      npm install
+      npm i angular-cli-ghpages@0.5.3 --save-dev
+    displayName: 'npm install'
+  - script: |
+      ng build --prod --base-href "https://psi77.github.io/roblockly/"
+    displayName: 'build with correct HREF'
+  - script: |
+      npx ngh --dir=dist/roblockly --repo=https://$GH_TOKEN@github.com/psi77/roblockly.git --name="roblocklyBuild" --email="roblockly@nodomain.com"
+    displayName: 'deploy to gh-pages'
