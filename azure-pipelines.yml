@@ -48,5 +48,5 @@ jobs:
       ng build --prod --base-href "https://psi77.github.io/roblockly/"
     displayName: 'build with correct HREF'
   - script: |
-      npx ngh --dir=dist/roblockly --repo=https://$GITHUB_TOKEN@github.com/psi77/roblockly.git --name="psi77" --email="simon@smith77.co.uk"
+      npx ngh --dir=dist/roblockly --repo=https://$GH_TOKEN@github.com/psi77/roblockly.git --name="psi77" --email="simon@smith77.co.uk"
     displayName: 'deploy to gh-pages'
