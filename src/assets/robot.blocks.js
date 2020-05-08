@@ -46,7 +46,21 @@ Blockly.Blocks['bias'] = {
 };
 Blockly.JavaScript['bias'] = function (block) {
   var code = 'robot.bias()';
-  // TODO: Change ORDER_NONE to the correct strength.
+  return [code, Blockly.JavaScript.ORDER_NONE];
+}
+
+Blockly.Blocks['label'] = {
+  init: function () {
+    this.appendDummyInput()
+      .appendField("label");
+    this.setOutput(true, null);
+    this.setColour(65);
+    this.setTooltip("");
+    this.setHelpUrl("");
+  }
+};
+Blockly.JavaScript['label'] = function (block) {
+  var code = 'robot.label()';
   return [code, Blockly.JavaScript.ORDER_NONE];
 }
 
@@ -90,18 +104,18 @@ Blockly.JavaScript['rotate'] = function (block) {
   return code;
 };
 
-Blockly.Blocks['stop'] = {
+Blockly.Blocks['fire'] = {
   init: function () {
     this.appendDummyInput()
-      .appendField("Stop");
+      .appendField("Fire");
     this.setPreviousStatement(true, null);
     this.setNextStatement(true, null);
-    this.setColour(20);
+    this.setColour(342);
     this.setTooltip("");
     this.setHelpUrl("");
   }
 };
-Blockly.JavaScript['stop'] = function (block) {
-  var code = 'robot.forward(0);\n';
+Blockly.JavaScript['fire'] = function (block) {
+  var code = 'robot.fire();\n';
   return code;
 };

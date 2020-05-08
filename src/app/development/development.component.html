@@ -8,9 +8,12 @@
       <button mat-flat-button (click)="restart()">
         Restart
       </button>
-      <button mat-flat-button (click)="toggleDebug()">
+      <mat-button-toggle (change)="toggleDebug()" class="mat-flat-button">
         Debug
-      </button>
+      </mat-button-toggle>
+      <mat-button-toggle (change)="toggleSound()" class="mat-flat-button">
+        Sound
+      </mat-button-toggle>
     </div>
   </mat-toolbar>
 

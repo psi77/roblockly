@@ -1,44 +1,5 @@
 import { ArenaScene } from './arena.scene';
-
-class SinCosLookup {
-
-  public static inst = new SinCosLookup();
-
-  LENGTH = 3600.0;
-  FACTOR = this.LENGTH / 360.0;
-  pSin: number[];
-  pCos: number[];
-
-  constructor() {
-    this.init();
-  }
-
-  init() {
-    this.pSin = [this.LENGTH];
-    this.pCos = [this.LENGTH];
-    let sv = 0;
-    let cv = 1;
-    const freq = 2 * Math.PI / this.LENGTH;
-    for (let n = 0; n < this.LENGTH; n++) {
-      this.pSin[n] = sv;
-      this.pCos[n] = cv;
-      cv -= sv * freq;
-      sv += cv * freq;
-    }
-  }
-
-  private toIndex(degrees: number): integer {
-    return (Math.floor(degrees * this.FACTOR) + this.LENGTH) % this.LENGTH;
-  }
-
-  sin(degrees: number): number {
-    return this.pSin[this.toIndex(degrees)];
-  }
-
-  cos(degrees: number): number {
-    return this.pCos[this.toIndex(degrees)];
-  }
-}
+import { SinCosLookup } from './lookup';
 
 class DaP {
   distance: number;
@@ -49,12 +10,14 @@ class DaP {
   }
 }
 
-export class DaB {
+export class SensorDetails {
   distance: number;
   bias: integer;
-  constructor(distance: number, bias: integer) {
+  label: string;
+  constructor(distance: number, bias: integer, label: string) {
     this.distance = distance;
     this.bias = bias;
+    this.label = label;
   }
 }
 
@@ -212,15 +175,15 @@ class RayFinder {
 export class ArenaHelper {
 
   arenaScene: ArenaScene;
+  allBodies: Phaser.Types.Physics.Matter.MatterBody[];
 
-  constructor(arenaScene: ArenaScene) {
+  constructor(arenaScene: ArenaScene, allBodies: Phaser.Types.Physics.Matter.MatterBody[]) {
     this.arenaScene = arenaScene;
-    // TODO: sin cos lookup
+    this.allBodies = allBodies;
   }
 
-  distanceToNearest(origin: Phaser.Physics.Matter.Image, maxRange: integer): DaB {
+  distanceToNearest(origin: Phaser.Physics.Matter.Image, maxRange: integer): SensorDetails {
 
-    // TODO: use lookup
     const sr = SinCosLookup.inst.sin(origin.angle);
     const cr = SinCosLookup.inst.cos(origin.angle);
 
@@ -236,11 +199,12 @@ export class ArenaHelper {
     if (this.arenaScene.debug) {
       this.arenaScene.gfx.lineStyle(rayWidth, 0xff00ff, 0.2).lineBetween(fsx, fsy, endX, endY);
     }
-    const bodies = this.arenaScene.matter.intersectRay(fsx, fsy, endX, endY, rayWidth);
+    const bodies = this.arenaScene.matter.intersectRay(fsx, fsy, endX, endY, rayWidth, this.allBodies);
 
     let closestDistance = maxRange * maxRange;
     let closestPoint: Phaser.Geom.Point = null;
     let closestBias = 0;
+    let closestLabel: string = null;
 
     const leftRay = new RayFinder(origin.x, origin.y, origin.width / 2.0, -origin.height / 2.0, cr, sr, maxRange, 1);
     const midRay = new RayFinder(origin.x, origin.y, origin.width / 2.0, 0.0, cr, sr, maxRange, 0);
@@ -285,6 +249,7 @@ export class ArenaHelper {
             closestDistance = dap.distance;
             closestPoint = dap.point;
             closestBias = ray.bias;
+            closestLabel = (bod as any).label;
           }
         }
       }
@@ -293,6 +258,6 @@ export class ArenaHelper {
       this.arenaScene.gfx.lineStyle(1, 0xff0000);
       this.arenaScene.gfx.strokeCircle(closestPoint.x, closestPoint.y, rayWidth / 2.0);
     }
-    return new DaB(Math.sqrt(closestDistance), closestBias);
+    return new SensorDetails(Math.sqrt(closestDistance), closestBias, closestLabel);
   }
 }

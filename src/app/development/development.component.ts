@@ -38,4 +38,8 @@ export class DevelopmentComponent implements OnInit {
   toggleDebug() {
     this.gameComponent.toggleDebug();
   }
+
+  toggleSound() {
+    this.gameComponent.toggleSound();
+  }
 }

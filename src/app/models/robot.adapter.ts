@@ -10,6 +10,8 @@ export class RobotAdapter {
   maxRotation = 0.02;
   sensorDistance: number;
   sensorBias: integer;
+  sensorLabel: string;
+  fireRequest = false;
 
   thrust = 0.0;
   angularVelocity = 0.0;
@@ -43,6 +45,10 @@ export class RobotAdapter {
 
   rotate(percentage: number) {
     this.angularVelocity = this.angleFromPercentage(percentage);
+  }
+
+  fire() {
+    this.fireRequest = true;
   }
 
   debugCode(id: string) {
@@ -103,6 +109,26 @@ export class RobotAdapter {
         robot,
         'bias',
         interpreter.createNativeFunction(bw)
+      );
+
+      // label
+      const sl = () => {
+        return adapter.sensorLabel;
+      };
+      interpreter.setProperty(
+        robot,
+        'label',
+        interpreter.createNativeFunction(sl)
+      );
+
+      // fire
+      const fr = () => {
+        return adapter.fire();
+      };
+      interpreter.setProperty(
+        robot,
+        'fire',
+        interpreter.createNativeFunction(fr)
       );
     };
     this.interpreter = new Interpreter(program, initFunc);

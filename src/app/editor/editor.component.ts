@@ -11,8 +11,6 @@ function movementCategory(workspace) {
   xmlList.push(Blockly.Xml.textToDom(bt));
   bt = '<block type="rotate"></block>';
   xmlList.push(Blockly.Xml.textToDom(bt));
-  bt = '<block type="stop"></block>';
-  xmlList.push(Blockly.Xml.textToDom(bt));
 
   return xmlList;
 }
@@ -23,6 +21,16 @@ function sensorCategory(workspace) {
   let bt = '<block type="sensor"></block>';
   xmlList.push(Blockly.Xml.textToDom(bt));
   bt = '<block type="bias"></block>';
+  xmlList.push(Blockly.Xml.textToDom(bt));
+  bt = '<block type="label"></block>';
+  xmlList.push(Blockly.Xml.textToDom(bt));
+  return xmlList;
+}
+
+function weaponsCategory(workspace) {
+  const xmlList = [];
+
+  const bt = '<block type="fire"></block>';
   xmlList.push(Blockly.Xml.textToDom(bt));
   return xmlList;
 }
@@ -70,6 +78,7 @@ export class EditorComponent implements OnInit {
     );
     this.workspace.registerToolboxCategoryCallback('ROBOT_MOVEMENT', movementCategory);
     this.workspace.registerToolboxCategoryCallback('ROBOT_SENSORS', sensorCategory);
+    this.workspace.registerToolboxCategoryCallback('ROBOT_WEAPONS', weaponsCategory);
 
     // TODO: load or new
     // new

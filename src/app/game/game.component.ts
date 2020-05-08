@@ -35,7 +35,7 @@ export class GameComponent implements OnInit, AfterViewInit {
               // debug: {
               //   showBounds: true
               // },
-              debug: true,
+              debug: false,
               gravity: {
                   x: 0,
                   y: 0
@@ -61,5 +61,9 @@ export class GameComponent implements OnInit, AfterViewInit {
 
   toggleDebug() {
     (this.phaserGame.scene.getScene('ArenaScene') as ArenaScene).toggleDebug();
+  }
+
+  toggleSound() {
+    (this.phaserGame.scene.getScene('ArenaScene') as ArenaScene).toggleSoundFX();
   }
 }
