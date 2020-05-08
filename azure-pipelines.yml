@@ -49,4 +49,4 @@ jobs:
   - script: |
       npx ngh --dir=dist/roblockly --repo=https://$env:GH_TOKEN@github.com/psi77/roblockly.git --name="psi77" --email="simon@smith77.co.uk" --no-silent
     displayName: 'deploy to gh-pages'
-    env: ${GH_TOKEN}
+    env: $(GH_TOKEN)
