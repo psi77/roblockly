@@ -42,7 +42,6 @@ jobs:
   - script: |
       npm install -g @angular/cli
       npm install
-      npm i angular-cli-ghpages@0.5.3 --save-dev
     displayName: 'npm install'
   - script: |
       ng build --prod --base-href "https://psi77.github.io/roblockly/"
