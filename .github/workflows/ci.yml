@@ -1,0 +1,47 @@
+name: CI
+
+on:
+  push:
+    branches-ignore:
+      - 'gh-pages'
+
+jobs:
+  build_and_test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - name: Use Node.js 12.x
+        uses: actions/setup-node@v1
+        with:
+          node-version: 12.x
+      - name: Install Dependencies
+        run: npm install
+      - name: Lint
+        run: npm run lint
+      - name: Build
+        run: npm run build
+
+  deploy:
+    needs: build_and_test
+    runs-on: ubuntu-latest
+    if: github.ref == 'refs/heads/develop'
+    steps:
+      - uses: actions/checkout@v2
+      - name: Use Node.js 12.x
+        uses: actions/setup-node@v1
+        with:
+          node-version: 12.x
+      - name: Install Dependencies
+        run: npm install
+      - name: Build for GitHub Pages
+        run: ng build --prod --base-href "https://psi77.github.io/roblockly/"
+      - name: Deploy to GitHub Pages
+        uses: angular-cli-ghpages/angular-cli-ghpages-action@v1
+        with:
+          dir: dist/roblockly
+          repo: https://github.com/psi77/roblockly.git
+          branch: gh-pages
+          name: psi77
+          email: simon@smith77.co.uk
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
